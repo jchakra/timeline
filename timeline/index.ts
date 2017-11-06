@@ -1,35 +1,26 @@
-import { button, div, DOMSource, makeDOMDriver, p, VNode } from '@cycle/dom'
-import { run } from '@cycle/run'
-import xs, { Stream } from 'xstream'
+import { DOMSource, makeDOMDriver, VNode } from '@cycle/dom'
+import { run, Sinks as Si, Sources as So } from '@cycle/run'
+import onionify, { Reducer, StateSource } from 'cycle-onionify'
+import { Stream } from 'xstream'
 
-interface ISources {
+import main from 'timeline/app'
+
+export interface IAppState {
+  count: number
+}
+
+export interface ISources<S = IAppState> extends So {
   DOM: DOMSource
+  onion: StateSource<S>
 }
 
-interface ISinks {
+export interface ISinks<S = IAppState> extends Si {
   DOM: Stream<VNode>
+  onion: Stream<Reducer<S>>
 }
 
-function main(sources: ISources): ISinks {
+const wrappedMain = onionify(main)
 
-  const action$ = xs.merge(
-    sources.DOM.select('.decrement').events('click').map((_) => -1),
-    sources.DOM.select('.increment').events('click').map((_) => +1),
-  )
-  const count$ = action$.fold((acc, x) => acc + (x as number), 0)
-  const vdom$ = count$.map((count) =>
-    div([
-      button('.decrement', 'Decrement'),
-      button('.increment', 'Increment'),
-      p('Counter: ' + count),
-    ]),
-  )
-
-  return {
-    DOM: vdom$,
-  }
-}
-
-run(main, {
+run(wrappedMain, {
   DOM: makeDOMDriver('#main-container'),
 })
