@@ -52,7 +52,8 @@ const commonConfig = {
 module.exports = [
   Object.assign(
     {
-      entry: ['./timeline/index.ts', './timeline/index.scss', './timeline/index.html'],
+      context: path.resolve(__dirname, 'timeline'),
+      entry: ['./index.ts', './index.scss', './index.html'],
       output: {
         filename: 'app.js',
         path: path.resolve(__dirname, 'dist'),

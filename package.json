@@ -12,7 +12,6 @@
   "license": "MIT",
   "dependencies": {
     "@cycle/dom": "^19.3.0",
-    "@cycle/history": "^6.8.0",
     "@cycle/isolate": "^3.2.0",
     "@cycle/run": "^3.4.0",
     "cycle-onionify": "^4.0.0",
