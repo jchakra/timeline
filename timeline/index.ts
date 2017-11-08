@@ -3,11 +3,7 @@ import { run, Sinks as Si, Sources as So } from '@cycle/run'
 import onionify, { Reducer, StateSource } from 'cycle-onionify'
 import { Stream } from 'xstream'
 
-import main from 'timeline/app'
-
-export interface IAppState {
-  count: number
-}
+import main, { IAppState } from 'timeline/App'
 
 export interface ISources<S = IAppState> extends So {
   DOM: DOMSource
