@@ -1,7 +1,18 @@
+@import './App/index';
+@import './Timeline/index';
+@import './Cards/index';
+
 html, body {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
   background-color: #36393e;
   color:#AAA;
+  width:100%;
+  height:100%;
+}
+
+#main-container {
+  width:100%;
+  height:100%;
 }
