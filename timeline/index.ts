@@ -1,16 +1,16 @@
 import { DOMSource, makeDOMDriver, VNode } from '@cycle/dom'
-import { run, Sinks as Si, Sources as So } from '@cycle/run'
+import { run } from '@cycle/run'
 import onionify, { Reducer, StateSource } from 'cycle-onionify'
 import { Stream } from 'xstream'
 
-import main, { IAppState } from 'timeline/App'
+import main from 'timeline/App'
 
-export interface ISources<S = IAppState> extends So {
+export interface ISources<S> {
   DOM: DOMSource
   onion: StateSource<S>
 }
 
-export interface ISinks<S = IAppState> extends Si {
+export interface ISinks<S> {
   DOM: Stream<VNode>
   onion: Stream<Reducer<S>>
 }

@@ -1,6 +1,6 @@
 import { div } from '@cycle/dom'
 import isolate from '@cycle/isolate'
-import { makeCollection } from 'cycle-onionify'
+import { makeCollection, Reducer } from 'cycle-onionify'
 import xs from 'xstream'
 
 import { ISinks, ISources } from 'timeline'
@@ -27,7 +27,7 @@ export const CardsLens = {
 
 export default function Timeline(sources: ISources<ITimelineState>): ISinks<ITimelineState> {
 
-  const cardsSinks = isolate(Cards, { onion: CardsLens })(sources) as ISinks<ITimelineState>
+  const cardsSinks = isolate(Cards, { onion: CardsLens })(sources)
 
   const state$ = sources.onion.state$
 
@@ -49,7 +49,7 @@ export default function Timeline(sources: ISources<ITimelineState>): ISinks<ITim
       div('.Timeline', cardsVDOM),
     )
 
-  const reducer$ = xs.merge(initReducer$, addCardReducer$, cardsSinks.onion)
+  const reducer$ = xs.merge<Reducer<ITimelineState>>(initReducer$, addCardReducer$, cardsSinks.onion)
 
   return {
     DOM: vdom$,

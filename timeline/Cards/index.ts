@@ -1,8 +1,7 @@
 import { div } from '@cycle/dom'
+import xs from 'xstream'
 
 import { ISinks, ISources } from 'timeline'
-
-import xs from 'xstream'
 
 export interface ICardState {
   x: number,
