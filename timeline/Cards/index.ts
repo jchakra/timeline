@@ -21,6 +21,7 @@ export default function Cards(sources: ISources<ICardState>): ISinks<ICardState>
 
   return {
     DOM:  vdom$,
+    Timeline: xs.empty(),
     onion: xs.empty(),
   }
 }
