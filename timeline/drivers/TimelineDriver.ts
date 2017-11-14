@@ -47,7 +47,7 @@ export default function makeTimelineDriver(selector: string, settings: ITimeline
     const cursorLine = timelineElt.querySelector('#timeline__cursor--line') as HTMLElement
     if (cursorLine) {
       cursorLine.style.display = 'block'
-      cursorLine.style.left = `${data.payload.x}px`
+      cursorLine.style.left = `${data.payload.x - 1}px`
     }
   }
 
