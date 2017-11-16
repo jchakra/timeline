@@ -1,12 +1,13 @@
 @import './App/index';
-@import './CardsPanel/index';
-@import './Cards/index';
+@import './DetailsPanel/index';
+@import './TimelinePanel/index';
+@import './TimelineEvent/index';
 
 html, body {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  background-color: #36393e;
+  background-color: #2d3034;
   color:#AAA;
   width:100%;
   height:100%;
@@ -19,9 +20,4 @@ body {
 
 #main-container {
   flex:1;
-}
-
-#timeline {
-  flex: 0 0 200px;
-  background-color: #444;
 }

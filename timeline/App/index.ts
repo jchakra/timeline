@@ -4,32 +4,58 @@ import { Reducer } from 'cycle-onionify'
 import xs from 'xstream'
 
 import { ISinks, ISources } from 'timeline'
-import CardsPanel, { ICardsPanelState } from 'timeline/CardsPanel'
+import DetailsPanel, { IDetailsPanelState } from 'timeline/DetailsPanel'
 import Header from 'timeline/Header'
+import TimelinePanel, { ITimelinePanelState } from 'timeline/TimelinePanel'
 
 export interface IAppState {
-  cardsPanel: ICardsPanelState
+  timelinePanel: ITimelinePanelState
+  detailsPanel: IDetailsPanelState
 }
 
-const TimelineLens = {
-  get: (state: IAppState) => state.cardsPanel,
-  set: (state: IAppState, childState: ICardsPanelState) => ({ ...state, cardsPanel: childState }),
+const TimelinePanelLens = {
+  get: (state: IAppState) => state.timelinePanel,
+  set: (state: IAppState, childState: ITimelinePanelState) => ({
+    detailsPanel: state.detailsPanel,
+    timelinePanel: childState,
+   }),
+}
+
+const DetailsPanelLens = {
+  get: (state: IAppState) => state && state.timelinePanel && state.timelinePanel.selectedTimelineEvent,
+  set: (state: IAppState, childState: IDetailsPanelState) => ({
+    ...state,
+    timelinePanel: {
+      ...state.timelinePanel,
+      timelineEvents: state.timelinePanel.timelineEvents.map((tev) =>
+        (tev.key === childState.key) ? { ...tev, ...childState } : tev),
+    },
+  }),
 }
 
 export default function main(sources: ISources<IAppState>): ISinks<IAppState> {
   const headerSinks = Header()
-  const timelineSinks = isolate(CardsPanel, { onion: TimelineLens })(sources)
 
-  const vdom$ = xs.combine(headerSinks.DOM, timelineSinks.DOM)
-    .map(([headerDOM, timelineDOM]) =>
-      div('.App', [headerDOM, timelineDOM]))
+  const timelinePanelSinks = isolate(TimelinePanel, { onion: TimelinePanelLens })(sources)
+  const cardsPanelSinks = isolate(DetailsPanel, { onion: DetailsPanelLens })(sources)
 
-  const initReducer$ = xs.of((prev: IAppState) => (prev !== undefined ? prev : { cardsPanel: { cards: [] } }))
-  const reducer$ = xs.merge<Reducer<IAppState>>(initReducer$, timelineSinks.onion)
+  const vdom$ = xs.combine(headerSinks.DOM, cardsPanelSinks.DOM, timelinePanelSinks.DOM)
+    .map(([headerDOM, cardsPanelDOM, timelinePanelDom]) =>
+      div('.App', [headerDOM, cardsPanelDOM, timelinePanelDom]))
+
+  const initReducer$ = xs.of((prev: IAppState) => (prev !== undefined ? prev : {
+    detailsPanel: { currentSelection: {} },
+    timelinePanel: { timelineEvents: [], selectedTimelineEvent: null },
+  }))
+
+  const reducer$ = xs.merge<Reducer<IAppState | undefined>>(
+    initReducer$,
+    cardsPanelSinks.onion,
+    timelinePanelSinks.onion,
+  )
 
   return {
     DOM: vdom$,
-    Timeline: timelineSinks.Timeline,
     onion: reducer$,
   }
 }
