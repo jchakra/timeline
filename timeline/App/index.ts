@@ -22,15 +22,27 @@ const TimelinePanelLens = {
 }
 
 const DetailsPanelLens = {
-  get: (state: IAppState) => state && state.timelinePanel && state.timelinePanel.selectedTimelineEvent,
-  set: (state: IAppState, childState: IDetailsPanelState) => ({
-    ...state,
-    timelinePanel: {
-      ...state.timelinePanel,
-      timelineEvents: state.timelinePanel.timelineEvents.map((tev) =>
-        (tev.key === childState.key) ? { ...tev, ...childState } : tev),
-    },
-  }),
+  get: (state: IAppState) => state.timelinePanel.selectedTimelineEvent,
+  set: (state: IAppState, childState: IDetailsPanelState) =>
+    childState ?
+      ({
+        ...state,
+        timelinePanel: {
+          ...state.timelinePanel,
+          selectedTimelineEvent: childState,
+          timelineEvents: state.timelinePanel.timelineEvents.map((tev) =>
+            (tev.key === childState.key) ? { ...tev, ...childState } : tev),
+        },
+      }) :
+      ({
+        ...state,
+        timelinePanel: {
+          ...state.timelinePanel,
+          selectedTimelineEvent: null,
+          timelineEvents: state.timelinePanel.timelineEvents.filter((tev) =>
+            !state.timelinePanel.selectedTimelineEvent || tev.key !== state.timelinePanel.selectedTimelineEvent.key),
+        },
+      }),
 }
 
 export default function main(sources: ISources<IAppState>): ISinks<IAppState> {
@@ -44,7 +56,7 @@ export default function main(sources: ISources<IAppState>): ISinks<IAppState> {
       div('.App', [headerDOM, cardsPanelDOM, timelinePanelDom]))
 
   const initReducer$ = xs.of((prev: IAppState) => (prev !== undefined ? prev : {
-    detailsPanel: { currentSelection: {} },
+    detailsPanel: {},
     timelinePanel: { timelineEvents: [], selectedTimelineEvent: null },
   }))
 
