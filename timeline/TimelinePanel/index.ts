@@ -33,7 +33,7 @@ const TimelineEventLens = {
       selectedTimelineEvent: newSelected || null,
       timelineEvents: childState.map((tev) => ({
         ...tev,
-        selected: newSelected ? tev.key === newSelected.key : false 
+        selected: newSelected ? tev.key === newSelected.key : false,
       })),
     }
   },
