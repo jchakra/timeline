@@ -71,9 +71,23 @@ export default function Timeline(sources: ISources<ITimelinePanelState>): ISinks
     timelineEventsSinks.onion,
   )
 
-  const vdom$ = xs.combine(state$, timelineEventsSinks.DOM)
-  .map(([_, timelineEventsVDOM]) =>
-    div('.Timeline', div('', timelineEventsVDOM)),
+  const cursorLine$ = sources.DOM.select('.Timeline__layer').events('mousemove')
+    .map((event: MouseEvent) => ({ mx: event.offsetX, my: event.offsetY }))
+
+  const cursorOut$ = sources.DOM.select('.Timeline__layer').events('mouseout')
+      .mapTo(null)
+
+  const cursor$ = xs.merge(cursorLine$, cursorOut$).startWith(null)
+
+  const vdom$ = xs.combine(state$, cursor$, timelineEventsSinks.DOM)
+  .map(([_, cursor, timelineEventsVDOM]) =>
+    div('.Timeline', [
+      div('',  timelineEventsVDOM),
+      div('.Timeline__layer', [
+        cursor && div('.Timeline--cursor .Timeline--cursor-x', { style: { left:  `${cursor.mx - 1 }px` } }, ''),
+        cursor && div('.Timeline--cursor .Timeline--cursor-y', { style: { top: `${cursor.my - 1 }px` } }, ''),
+      ]),
+    ]),
   )
 
   return {

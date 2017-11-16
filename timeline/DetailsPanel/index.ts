@@ -11,7 +11,7 @@ export default function DetailsPanel(sources: ISources<IDetailsPanelState>): ISi
   const state$ = sources.onion.state$
 
   const initReducer$ = xs.of((prev: IDetailsPanelState) => prev !== undefined ? prev : { })
-  
+
   const clickMeReducer$ = sources.DOM.select('.xx').events('click')
     .map(() => (state: IDetailsPanelState) => ({ ...state, x: 100, y: 50  }))
 

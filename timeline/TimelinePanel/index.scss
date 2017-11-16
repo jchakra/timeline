@@ -1,6 +1,31 @@
 .Timeline {
-  flex: 0 0 200px;
+  flex: 0 0 300px;
   border-top: 3px solid #bbb;
   background-color: #3c4046;
   position: relative;
+
+  &__layer {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+  }
+
+  &--cursor{
+    position: absolute;
+    border: 1px dashed #555;
+    pointer-events: none;
+
+    &-x {
+      top: 0;
+      bottom: 0;
+    }
+
+    &-y {
+      left: 0;
+      right: 0;
+    }
+  }
 }
