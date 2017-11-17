@@ -4,15 +4,32 @@ import xs from 'xstream'
 
 import { ISinks, ISources } from 'timeline'
 
+export interface ITimelineEventDescriptionState {
+  name: string
+}
+
 export interface ITimelineEventState {
   x: number
   y: number
   key: string
   selected: boolean
-  description?: {}
+  description: ITimelineEventDescriptionState
   color?: string
   width?: number
-  dragged?: boolean
+}
+
+export function createTimelineEvent(x: number, y: number): ITimelineEventState {
+  return {
+    color: '',
+    description: {
+      name: '',
+    },
+    key: +new Date() + '',
+    selected: false,
+    width: 0,
+    x,
+    y,
+  }
 }
 
 export default function TimelineEvent(sources: ISources<ITimelineEventState>): ISinks<ITimelineEventState> {
@@ -34,7 +51,13 @@ export default function TimelineEvent(sources: ISources<ITimelineEventState>): I
       '.TimelineEvent',
       {
         attrs: { draggable: 'true' },
-        style: { left: `${state.x - 6}px`, top: `${state.y - 6}px`, borderColor: (state.selected) ? '#FFF' : '#000' } },
+        style: {
+          backgroundColor: state.color !== '' ? state.color : null,
+          borderColor: (state.selected) ? '#FFF' : '#000',
+          left: `${state.x - 9}px`,
+          top: `${state.y - 9}px`,
+        },
+      },
       '',
     ),
   )

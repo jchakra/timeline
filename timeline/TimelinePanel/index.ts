@@ -4,7 +4,7 @@ import { makeCollection, Reducer } from 'cycle-onionify'
 import xs from 'xstream'
 
 import { ISinks, ISources } from 'timeline'
-import TimelineEvent, { ITimelineEventState } from 'timeline/TimelineEvent'
+import TimelineEvent, { createTimelineEvent, ITimelineEventState } from 'timeline/TimelineEvent'
 
 export interface ITimelinePanelState {
   timelineEvents: ITimelineEventState[]
@@ -17,7 +17,7 @@ const TimelineEvents = makeCollection({
     onion: instances.pickMerge('onion'),
   }),
   item: TimelineEvent,
-  itemKey: (_, index) => String(index),
+  itemKey: (state: ITimelineEventState) => state.key,
   itemScope: (key) => key,
 })
 
@@ -48,8 +48,6 @@ export default function Timeline(sources: ISources<ITimelinePanelState>): ISinks
   const timelineClickAction$ = sources.DOM.select('.Timeline').events('click')
     .map((event) => ({
       payload: {
-        key: +new Date() + '',
-        selected: false,
         x: event.offsetX,
         y: event.offsetY,
       },
@@ -63,7 +61,11 @@ export default function Timeline(sources: ISources<ITimelinePanelState>): ISinks
     .filter(({ type }) => type === 'addTimelineEvent')
     .map(({ payload }) =>
       (state: ITimelinePanelState) =>
-        ({ ...state, timelineEvents: state.timelineEvents.concat(payload) }))
+        ({
+          ...state,
+          timelineEvents: state.timelineEvents.concat(createTimelineEvent(payload.x, payload.y)),
+        }),
+    )
 
   const reducer$ = xs.merge<Reducer<ITimelinePanelState>>(
     initReducer$,
