@@ -6,6 +6,7 @@ import { ISinks, ISources } from 'timeline'
 
 export interface ITimelineEventDescriptionState {
   name: string
+  description: string
 }
 
 export interface ITimelineEventState {
@@ -22,6 +23,7 @@ export function createTimelineEvent(x: number, y: number): ITimelineEventState {
   return {
     color: '',
     description: {
+      description: '',
       name: '',
     },
     key: +new Date() + '',
