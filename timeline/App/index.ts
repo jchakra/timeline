@@ -1,16 +1,16 @@
 import { div } from '@cycle/dom'
 import isolate from '@cycle/isolate'
 import { Reducer } from 'cycle-onionify'
-import xs from 'xstream'
+import xs, { Stream } from 'xstream'
 
 import { ISinks, ISources } from 'timeline'
 import DetailsPanel, { IDetailsPanelState } from 'timeline/DetailsPanel'
 import Header from 'timeline/Header'
-import TimelinePanel, { ITimelinePanelState } from 'timeline/TimelinePanel'
+import TimelinePanel, { initialState as TPInitialState, ITimelinePanelState } from 'timeline/TimelinePanel'
 
 export interface IAppState {
   timelinePanel: ITimelinePanelState
-  detailsPanel: IDetailsPanelState
+  detailsPanel?: IDetailsPanelState
 }
 
 const TimelinePanelLens = {
@@ -22,14 +22,13 @@ const TimelinePanelLens = {
 }
 
 const DetailsPanelLens = {
-  get: (state: IAppState) => state.timelinePanel.selectedTimelineEvent,
+  get: (state: IAppState) => state.timelinePanel.timelineEvents[state.timelinePanel.selectedTimelineEvent] || null,
   set: (state: IAppState, childState: IDetailsPanelState) =>
     childState ?
       ({
         ...state,
         timelinePanel: {
           ...state.timelinePanel,
-          selectedTimelineEvent: childState,
           timelineEvents: state.timelinePanel.timelineEvents.map((tev) =>
             (tev.key === childState.key) ? { ...tev, ...childState } : tev),
         },
@@ -38,9 +37,10 @@ const DetailsPanelLens = {
         ...state,
         timelinePanel: {
           ...state.timelinePanel,
-          selectedTimelineEvent: null,
+          selectedTimelineEvent: -1,
           timelineEvents: state.timelinePanel.timelineEvents.filter((tev) =>
-            !state.timelinePanel.selectedTimelineEvent || tev.key !== state.timelinePanel.selectedTimelineEvent.key),
+            !state.timelinePanel.timelineEvents[state.timelinePanel.selectedTimelineEvent] ||
+              tev.key !== state.timelinePanel.timelineEvents[state.timelinePanel.selectedTimelineEvent].key),
         },
       }),
 }
@@ -55,12 +55,11 @@ export default function main(sources: ISources<IAppState>): ISinks<IAppState> {
     .map(([headerDOM, cardsPanelDOM, timelinePanelDom]) =>
       div('.App', [headerDOM, cardsPanelDOM, timelinePanelDom]))
 
-  const initReducer$ = xs.of((prev: IAppState) => (prev !== undefined ? prev : {
-    detailsPanel: {},
-    timelinePanel: { timelineEvents: [], selectedTimelineEvent: null },
-  }))
+  const initReducer$ = xs.of((prev: IAppState): IAppState => (prev !== undefined ? prev : {
+    timelinePanel: TPInitialState,
+  })) as Stream<Reducer<IAppState>>
 
-  const reducer$ = xs.merge<Reducer<IAppState | undefined>>(
+  const reducer$ = xs.merge<Reducer<IAppState>>(
     initReducer$,
     cardsPanelSinks.onion,
     timelinePanelSinks.onion,

@@ -19,6 +19,40 @@ body {
   flex-direction: column;
 }
 
+body * {
+  box-sizing: border-box;
+}
+
 #main-container {
   flex:1;
+}
+
+input, textarea {
+  padding: .8rem 1.5rem;
+  margin: 0.5rem 1rem;
+  border: 0;
+  outline: none;
+  background-color: lighten($color: #2d3034, $amount: 10);
+  border-radius: 2px;
+  color: #ddd;
+  font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+  border: 0;
+  outline: none;
+  padding: 1rem 2rem;
+  margin: .5rem 1rem;
+  background: lighten($color: #2d3034, $amount: 15);
+  color: #fff;
+  cursor: pointer;
+
+  & * {
+    vertical-align: middle;
+  }
+
+  & span {
+    font-size:16px;
+  }
 }

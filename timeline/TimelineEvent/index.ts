@@ -1,6 +1,6 @@
 import { div } from '@cycle/dom'
-// import { Reducer } from 'cycle-onionify'
-import xs from 'xstream'
+import { Reducer } from 'cycle-onionify'
+import xs, { Stream } from 'xstream'
 
 import { ISinks, ISources } from 'timeline'
 
@@ -42,9 +42,9 @@ export default function TimelineEvent(sources: ISources<ITimelineEventState>): I
   const selectedReducer$ =  selected$
     .map(() =>
       (state: ITimelineEventState) =>
-        ({ ...state, selected: !state.selected }))
+        ({ ...state, selected: !state.selected })) as Stream<Reducer<ITimelineEventState>>
 
-  const reducer$ = xs.merge(selectedReducer$)
+  const reducer$ = xs.merge<Reducer<ITimelineEventState>>(selectedReducer$)
 
   const vdom$ = state$.map((state) =>
     div(

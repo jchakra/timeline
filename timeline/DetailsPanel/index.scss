@@ -1,5 +1,14 @@
-#DetailsPanel {
+.DetailsPanel {
   flex: 1;
   position: relative;
   padding: 1rem;
+
+  &__description {
+    display: flex;
+    min-height: 200px;
+
+    &--field{
+      flex:1;
+    }
+  }
 }
