@@ -13,6 +13,17 @@
     z-index: 1;
   }
 
+  &__drawer {
+    position: absolute;
+    pointer-events: none;
+    background-color: #7289da;
+    border:1px solid #000;
+    padding:8px;
+    border-radius: 8px;
+    z-index: 2;
+    opacity: .5;
+  }
+
   &--cursor{
     position: absolute;
     border: 1px dashed #555;

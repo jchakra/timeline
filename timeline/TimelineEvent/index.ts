@@ -37,7 +37,7 @@ export function createTimelineEvent(x: number, y: number): ITimelineEventState {
 export default function TimelineEvent(sources: ISources<ITimelineEventState>): ISinks<ITimelineEventState> {
   const state$ = sources.onion.state$
 
-  const selected$ = sources.DOM.select('.TimelineEvent').events('click')
+  const selected$ = sources.DOM.select('.TimelineEvent').events('mousedown')
     .map((event) => event.stopPropagation())
     .mapTo(({ type: 'selectTimelineEvent' }))
 
@@ -58,6 +58,7 @@ export default function TimelineEvent(sources: ISources<ITimelineEventState>): I
           borderColor: (state.selected) ? '#FFF' : '#000',
           left: `${state.x - 9}px`,
           top: `${state.y - 9}px`,
+          width: `${state.width}px`,
         },
       },
       '',
