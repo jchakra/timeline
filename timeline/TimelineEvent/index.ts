@@ -55,7 +55,7 @@ export default function TimelineEvent(sources: ISources<ITimelineEventState>): I
         attrs: { draggable: 'true' },
         style: {
           backgroundColor: state.color !== '' ? state.color : null,
-          borderColor: (state.selected) ? '#FFF' : '#000',
+          borderColor: (state.selected) ? '#FFF' : null,
           left: `${state.x - 9}px`,
           top: `${state.y - 9}px`,
           width: `${state.width}px`,

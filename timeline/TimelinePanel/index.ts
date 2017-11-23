@@ -1,20 +1,18 @@
 import { div } from '@cycle/dom'
 import isolate from '@cycle/isolate'
 import { makeCollection, Reducer } from 'cycle-onionify'
-import xs, { Stream } from 'xstream'
+import xs from 'xstream'
 
 import { ISinks, ISources } from 'timeline'
-import TimelineEvent, { createTimelineEvent, ITimelineEventState } from 'timeline/TimelineEvent'
+import TimelineEvent, { ITimelineEventState } from 'timeline/TimelineEvent'
+
+import intent from './intent'
+import model from './model'
 
 export interface ITimelinePanelState {
   timelineEvents: ITimelineEventState[]
   selectedTimelineEvent: number
   currentlyCreated?: ITimelineEventState
-}
-
-export const initialState: ITimelinePanelState = {
-  selectedTimelineEvent: -1,
-  timelineEvents: [],
 }
 
 const TimelineEvents = makeCollection({
@@ -51,74 +49,8 @@ export default function Timeline(sources: ISources<ITimelinePanelState>): ISinks
 
   const state$ = sources.onion.state$
 
-  const timelineMouseDownAction$ = sources.DOM.select('.Timeline').events('mousedown')
-    .map((event) => ({
-      payload: {
-        x: event.offsetX,
-        y: event.offsetY,
-      },
-      type: 'startCreateTimelineEvent',
-    }))
-
-  const timelineMouseMoveAction$ = sources.DOM.select('.Timeline').events('mousemove')
-    .map((event) => ({
-      payload: {
-        x: event.offsetX,
-        y: event.offsetY,
-      },
-      type: 'moveCreateTimelineEvent',
-    }))
-
-  const timelineMouseUpAction$ = sources.DOM.select('.Timeline').events('mouseup')
-    .map((event) => ({
-      payload: {
-        x: event.offsetX,
-        y: event.offsetY,
-      },
-      type: 'endCreateTimelineEvent',
-    }))
-
-  const initReducer$ =  xs.of((prev: ITimelinePanelState) =>
-    prev !== undefined ? prev : initialState) as Stream<Reducer<ITimelinePanelState>>
-
-  const timelineMouseDownReducer$ = timelineMouseDownAction$
-    .map(({ payload }) =>
-      (state: ITimelinePanelState) =>
-        ({
-          ...state,
-          currentlyCreated: createTimelineEvent(payload.x, payload.y),
-        }),
-    ) as Stream<Reducer<ITimelinePanelState>>
-
-  const timelineMouseMoveReducer$ = timelineMouseMoveAction$
-    .map(({ payload }) =>
-      (state: ITimelinePanelState) =>
-        state.currentlyCreated ? ({
-          ...state,
-          currentlyCreated: {
-            ...state.currentlyCreated,
-            width: Math.abs(payload.x - state.currentlyCreated.x) + 16, // 16 means for padding left/right
-          },
-        }) : state,
-    ) as Stream<Reducer<ITimelinePanelState>>
-
-  const timelineMouseUpReducer$ = timelineMouseUpAction$
-    .map((_) =>
-      (state: ITimelinePanelState) =>
-        state.currentlyCreated ? ({
-          ...state,
-          currentlyCreated: undefined,
-          timelineEvents: state.timelineEvents.concat(state.currentlyCreated),
-        }) : state,
-    ) as Stream<Reducer<ITimelinePanelState>>
-
-  const reducer$ = xs.merge<Reducer<ITimelinePanelState>>(
-    initReducer$,
-    timelineMouseDownReducer$,
-    timelineMouseMoveReducer$,
-    timelineMouseUpReducer$,
-    timelineEventsSinks.onion,
-  )
+  const actions = intent(sources)
+  const reducer$ = model(actions)
 
   const cursorLine$ = sources.DOM.select('.Timeline__layer').events('mousemove')
     .map((event: MouseEvent) => ({ mx: event.offsetX, my: event.offsetY }))
@@ -150,6 +82,6 @@ export default function Timeline(sources: ISources<ITimelinePanelState>): ISinks
 
   return {
     DOM: vdom$,
-    onion: reducer$,
+    onion: xs.merge<Reducer<ITimelinePanelState>>(reducer$, timelineEventsSinks.onion),
   }
 }

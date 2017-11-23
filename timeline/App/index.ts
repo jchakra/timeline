@@ -6,7 +6,8 @@ import xs, { Stream } from 'xstream'
 import { ISinks, ISources } from 'timeline'
 import DetailsPanel, { IDetailsPanelState } from 'timeline/DetailsPanel'
 import Header from 'timeline/Header'
-import TimelinePanel, { initialState as TPInitialState, ITimelinePanelState } from 'timeline/TimelinePanel'
+import TimelinePanel, { ITimelinePanelState } from 'timeline/TimelinePanel'
+import { initialState as TPInitialState } from 'timeline/TimelinePanel/model'
 
 export interface IAppState {
   timelinePanel: ITimelinePanelState
