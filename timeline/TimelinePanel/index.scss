@@ -1,42 +1,85 @@
 .Timeline {
-  flex: 0 0 300px;
+  flex: 0 0 400px;
+  display: flex;
+  flex-direction: column;
   border-top: 3px solid #bbb;
-  background-color: #3c4046;
-  position: relative;
 
-  &__layer {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1;
-  }
+  &__sections {
+    flex: 0 0 50px;
+    background-color:#2d3034;
+    border-bottom: 1px solid lighten(#2d3034, 20);
+    cursor: crosshair;
+    position: relative;
 
-  &__drawer {
-    position: absolute;
-    pointer-events: none;
-    background-color: #7289da;
-    border:1px solid #000;
-    padding:8px;
-    border-radius: 8px;
-    z-index: 2;
-    opacity: .5;
-  }
-
-  &--cursor{
-    position: absolute;
-    border: 1px dashed #555;
-    pointer-events: none;
-
-    &-x {
+    &-layer {
+      position: absolute;
       top: 0;
       bottom: 0;
-    }
-
-    &-y {
       left: 0;
       right: 0;
+      z-index: 1;
+    }
+
+    &-drawer {
+      position: absolute;
+      pointer-events: none;
+      background-color: #4e84ad;
+      z-index: 2;
+      opacity: .5;
+      height: 100%;
+    }
+
+    &--cursor{
+      position: absolute;
+      border: 1px dashed #4e84ad;
+      pointer-events: none;
+  
+      &-x {
+        top: 0;
+        bottom: 0;
+      }
+    }
+  }
+
+  &__events {
+    flex:1;
+    background-color: #3c4046;
+    position: relative;
+
+    &-layer {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 1;
+    }
+  
+    &-drawer {
+      position: absolute;
+      pointer-events: none;
+      background-color: #7289da;
+      border:1px solid #000;
+      padding:8px;
+      border-radius: 8px;
+      z-index: 2;
+      opacity: .5;
+    }
+  
+    &--cursor{
+      position: absolute;
+      border: 1px dashed #555;
+      pointer-events: none;
+  
+      &-x {
+        top: 0;
+        bottom: 0;
+      }
+  
+      &-y {
+        left: 0;
+        right: 0;
+      }
     }
   }
 }
