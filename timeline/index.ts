@@ -1,6 +1,6 @@
 import { DOMSource, makeDOMDriver, VNode } from '@cycle/dom'
 import { run } from '@cycle/run'
-import storageDriver from '@cycle/storage'
+// import storageDriver from '@cycle/storage'
 import onionify, { Reducer, StateSource } from 'cycle-onionify'
 import { Stream } from 'xstream'
 
@@ -25,5 +25,5 @@ const wrappedMain = onionify(main)
 
 run(wrappedMain, {
   DOM: makeDOMDriver('#main-container'),
-  storage: storageDriver,
+  // storage: storageDriver,
 })
