@@ -20,7 +20,7 @@ const commonConfig = {
       },
       {
         exclude: /node_modules/,
-        loader: 'ts-loader',
+        loader: 'awesome-typescript-loader',
         test: /\.ts$/,
       },
       {
@@ -31,21 +31,22 @@ const commonConfig = {
         test: /\.scss$/,
         use: extractSass.extract({
           fallback: 'style-loader',
-          use: [{
+          use: [
+            {
               loader: 'css-loader',
-          }, {
+            },
+            {
               loader: 'sass-loader',
-          }],
+            },
+          ],
         }),
       },
     ],
   },
-  plugins: [
-    extractSass,
-  ],
+  plugins: [extractSass],
   resolve: {
     extensions: ['.ts', '.js'],
-    modules: [ process.env.NODE_PATH || '', 'node_modules' ],
+    modules: [process.env.NODE_PATH || '', 'node_modules'],
   },
 }
 
@@ -60,5 +61,6 @@ module.exports = [
       },
       target: 'web',
     },
-    commonConfig),
-  ]
+    commonConfig,
+  ),
+]

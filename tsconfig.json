@@ -2,21 +2,13 @@
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
-    "strict": true,
     "baseUrl": ".",
     "pretty": true,
     "noImplicitAny": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "sourceMap": true,
-    "lib": [
-      "dom",
-      "es2015",
-      "es2016.array.include",
-      "es2017.object"
-    ]
+    "lib": ["dom", "es2015", "es2016.array.include", "es2017.object"]
   },
-  "include": [
-    "timeline/**/*"
-  ]
+  "include": ["timeline/**/*"]
 }

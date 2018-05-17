@@ -17,8 +17,8 @@ export interface ISinks<S> {
 }
 
 export interface IAction {
-  type: string,
-  payload: any,
+  type: string
+  payload: any
 }
 
 const wrappedMain = onionify(main)
